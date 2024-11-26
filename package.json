@@ -1,0 +1,14 @@
+{
+  "name": "suggestment-be",
+  "version": "1.0.0",
+  "description": "backend for suggestment",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
