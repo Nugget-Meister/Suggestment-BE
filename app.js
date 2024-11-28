@@ -22,3 +22,5 @@ app.get("*",(req, res)=> {
         data: null
     })
 })
+
+module.exports = app
