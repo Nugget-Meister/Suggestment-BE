@@ -1,9 +1,9 @@
-const app = require(".app")
+const app = require("./app")
 
 require("dotenv").config()
 
 const environment = {
-    PORT: process.env.PORT
+    port: process.env.PORT
 }
 
 

@@ -1,5 +1,6 @@
 const express = require("express")
 const cors = require ("cors")
+const {getAll} = require("./queries/test.js")
 
 const app = express()
 
@@ -12,11 +13,32 @@ app.use(express.json())
 // app.use('/', controller)
 
 // Standard
-app.get("/", (req,res) => {
+app.get("/", async (req,res) => {
     res.send("Base response for Suggestment-BE. Hit an endpoint")
 })
 
-app.get("*",(req, res)=> {
+app.get('/test', async (req,res) => {
+    const result = await getAll()
+    if(result){
+        if(result.length == 0){
+            console.log("Caution - No results found for query.")
+        } else {
+            res.status(200).json({
+                message:"OK",
+                data: result,
+            })
+        }
+    } else {
+        console.log("Warning - Unable to access SQL server")
+        res.status(500).json({
+            message: "Server Unavailable",
+            data: null
+        })
+    }
+    res.send()
+})
+
+app.get("*", async (req, res)=> {
     res.status(404).json({
         message:"Route non-existent",
         data: null
