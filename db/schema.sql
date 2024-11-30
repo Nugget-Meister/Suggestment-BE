@@ -5,6 +5,14 @@ CREATE DATABASE IF NOT EXISTS kc_postgres;
 DROP TABLE IF EXISTS suggestment_transactions;
 DROP TABLE IF EXISTS suggestment_users;
 
+
+DROP TABLE IF EXISTS test;
+
+CREATE table test(
+    test_id serial primary key,
+    name varchar(255)
+);
+
 CREATE TABLE suggestment_transactions(
     transaction_id SERIAL PRIMARY KEY,
     user_id VARCHAR(256),

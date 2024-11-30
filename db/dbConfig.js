@@ -4,8 +4,8 @@ require("dotenv").config();
 
 const cn = process.env.PG_URL ? {
     connectionString: process.env.PG_URL,
+    max: 30,
     ssl: true,
-    max: 30
 } : {
     host: process.env.PG_HOST,
     port: process.env.PG_PORT,
