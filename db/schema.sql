@@ -13,7 +13,7 @@ CREATE table test(
     name varchar(255)
 );
 
-DROP TABLE IF EXISTS suggestment_transactions
+DROP TABLE IF EXISTS suggestment_transactions;
 
 CREATE TABLE suggestment_transactions(
     transaction_id SERIAL PRIMARY KEY,
@@ -22,10 +22,10 @@ CREATE TABLE suggestment_transactions(
     date TIMESTAMP
 );
 
-DROP TABLE IF EXISTS suggestment_users
+DROP TABLE IF EXISTS suggestment_users;
 
 CREATE TABLE suggestment_users(
-    user_id UUID() PRIMARY KEY,
+    user_id UUID PRIMARY KEY,
     email VARCHAR(256),
     username VARCHAR(64),
     password VARCHAR(128),
