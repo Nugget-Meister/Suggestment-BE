@@ -30,7 +30,12 @@ users.get('/', async (req, res) => {
 })
 
 users.post("/", async (req, res) => {
+    console.log(req.body)
 
+    res.status(200).json({
+        message:"OK",
+        data: req.body
+    })
 })
 
 module.exports = users

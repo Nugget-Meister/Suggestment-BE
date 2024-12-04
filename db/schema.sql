@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS suggestment_users;
 CREATE TABLE suggestment_users(
     user_id UUID PRIMARY KEY,
     email VARCHAR(256),
-    username VARCHAR(64),
+    name VARCHAR(64),
     password VARCHAR(128),
     isVerified BOOLEAN
 );
