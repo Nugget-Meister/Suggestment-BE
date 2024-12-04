@@ -1,9 +1,9 @@
 let db = require('../db/dbConfig.js')
 // kc_postgres
 
-let getUser = async() => {
+let getUser = async (data) => {
     try {
-        const result = await db.any("SELECT * FROM suggestment_users")
+        const result = await db.any("SELECT * FROM suggestment_users WHERE email=$1", [data.email])
         return result
     } catch (error) {
         return error
@@ -11,7 +11,7 @@ let getUser = async() => {
 }
 
 
-let getAllUsers = async() => {
+let getAllUsers = async () => {
     try {
         const result = await db.any("SELECT * FROM suggestment_users")
         return result
@@ -22,9 +22,11 @@ let getAllUsers = async() => {
 let createUser = async (data) => {
     try {
         const result = await db.one(
-            "INSERT INTO suggestment_users (email, username, password, isVerified) VALUES ($1,$2,$3, false)", 
+            "INSERT INTO suggestment_users (user_id, email, name, password, isVerified) VALUES (gen_random_uuid(),$2,$1,$3, false) RETURNING *", 
             [data.name, data.email, data.password]
         )
+        console.log(result)
+        return result
     } catch (error) {
         return error
     }
