@@ -2,6 +2,10 @@ const express = require("express")
 const cors = require ("cors")
 const {getAll} = require("./queries/test.js")
 
+//Controllers
+const userController =  require("./controllers/userController.js")
+
+
 const app = express()
 
 app.use(cors())
@@ -11,6 +15,8 @@ app.use(express.json())
 
 // Routes
 // app.use('/', controller)
+app.use('/users', userController)
+
 
 // Standard
 app.get("/", async (req,res) => {
