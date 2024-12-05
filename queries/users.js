@@ -10,6 +10,15 @@ let getUser = async (data) => {
     }
 }
 
+let getUserFrID = async (id) => {
+    try {
+        const result = await db.one("SELECT * FROM suggestment_users WHERE id=$1", [id])
+        return result
+    } catch (error) {
+        return error
+    }
+}
+
 
 let getAllUsers = async () => {
     try {
@@ -19,6 +28,8 @@ let getAllUsers = async () => {
         return error
     }
 }
+
+
 let createUser = async (data) => {
     try {
         const result = await db.one(
@@ -61,5 +72,6 @@ module.exports = {
     getAllUsers,
     updateUser,
     deleteUser,
-    verifyUser
+    verifyUser,
+    getUserFrID
 }
