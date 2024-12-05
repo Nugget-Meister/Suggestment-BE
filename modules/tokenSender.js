@@ -46,7 +46,7 @@ const sendVerification = (data) => {
         from: process.env.G_EMAIL,
         to: data.email,
         subject: 'Suggestment Email Verification',
-        text: `Hi! Thanks for signing up for Suggestment. However in order to continue, you'll need to verify your account. Follow the link below to verify your email. This link will expire in 10 minutes. ${liveURL}/verify/${token}`
+        text: `Hi! Thanks for signing up for Suggestment. However in order to continue, you'll need to verify your account. Follow the link below to verify your email. This link will expire in 10 minutes. ${liveURL}/users/verify/${token}`
     }
     
     // console.log(mailConfig)
@@ -59,7 +59,7 @@ const sendVerification = (data) => {
         t.sendMail(mailConfig, (error, info) => {
             if (error) throw Error(error)
             console.log(`Email sent to ${mailConfig.to}.`)
-            console.log(info)
+            console.log(info, error)
         })
     })
 

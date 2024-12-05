@@ -3,7 +3,7 @@ let db = require('../db/dbConfig.js')
 
 let getUser = async (data) => {
     try {
-        const result = await db.any("SELECT * FROM suggestment_users WHERE email=$1", [data.email])
+        const result = await db.one("SELECT * FROM suggestment_users WHERE email=$1", [data.email])
         return result
     } catch (error) {
         return error

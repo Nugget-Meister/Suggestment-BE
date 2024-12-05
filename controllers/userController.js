@@ -122,23 +122,35 @@ users.get("/verify/:token", async (req,res) => {
     }
 
     jwt.verify(token, 'verifyEmail', (error, decoded) => {
-       debug ? console.log("DEBUG: ",decoded) : null
+       debug ? console.log("DEBUG: ", decoded) : null
         if(error){
             console.log(error);
             fail(null)
         } else {
             //update table so user verified
             //check if user alraedy verified
-            getUser(decoded)
-        
-            verifyUser(decoded.email).then((response)=> {
-                debug ? console.log("DEBUG: ",response) : null
-                if(res.severity != undefined){
-                    fail(null)
-                }else {
-                    success(null)
+            // console.log(decoded.email)
+            getUser(decoded).then((response)=> {
+                // console.log("hello",response)
+                if(!response.isverified){
+                    verifyUser(decoded.email).then((response)=> {
+                        debug ? console.log("DEBUG: ",response) : null
+                        if(res.severity != undefined){
+                            fail(null)
+                        }else {
+                            success(null)
+                        }
+                    })
+                } else {
+                    console.log("User alrady verified.")
+                    res.status(201).json({
+                        message:"OK",
+                        details: "Already verified",
+                        data: null
+                    })
                 }
             })
+        
         }
     })
 })
