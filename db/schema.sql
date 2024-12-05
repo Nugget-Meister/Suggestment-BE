@@ -14,12 +14,13 @@ CREATE table test(
 );
 
 DROP TABLE IF EXISTS suggestment_transactions;
-
 CREATE TABLE suggestment_transactions(
     transaction_id SERIAL PRIMARY KEY,
     user_id VARCHAR(256),
     source_user_id VARCHAR(256),
-    date TIMESTAMP
+    details VARCHAR(256),
+    amount decimal, 
+    date date
 );
 
 DROP TABLE IF EXISTS suggestment_users;

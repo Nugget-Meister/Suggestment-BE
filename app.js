@@ -4,6 +4,7 @@ const {getAll} = require("./queries/test.js")
 
 //Controllers
 const userController =  require("./controllers/userController.js")
+const transactionController = require("./controllers/transactionController.js")
 
 
 const app = express()
@@ -16,6 +17,8 @@ app.use(express.json())
 // Routes
 // app.use('/', controller)
 app.use('/users', userController)
+app.use('/transactions', transactionController)
+
 
 
 // Standard

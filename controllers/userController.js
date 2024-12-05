@@ -1,7 +1,7 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
 
-const { getAllUsers, createUser, getUser, verifyUser } = require('../queries/users')
+const { getAllUsers, createUser, getUser, verifyUser, getUserFrID } = require('../queries/users')
 const {
     hashPassword,
     validatePassword,
@@ -9,8 +9,6 @@ const {
 const { sendVerification } = require('../modules/tokenSender.js')
 
 const users = express.Router()
-
-
 
 let debug = true
 
@@ -21,6 +19,29 @@ users.get('/', async (req, res) => {
 
     if(result){
         // console.log(res)
+        if(result.severity != undefined){
+            console.log("Error Detected: ", result.message)
+            res.status(500).json({
+                message:"BAD",
+
+                data: result
+            })
+        } else {
+            console.log("Dispensing.")
+            res.status(200).json({
+                message:"OK",
+                data: result
+            })
+        }
+    }
+})
+
+users.get('/:id', async (req, res) => {
+    let { id }= req.params;
+
+    console.log("GET Request received for id: ", id)
+    const result = await getUserFrID(id)
+    if(result){
         if(result.severity != undefined){
             console.log("Error Detected: ", result.message)
             res.status(500).json({
@@ -65,8 +86,6 @@ users.post("/", async (req, res) => {
 
     newUser.password = await hashPassword(newUser.password)
     let createdUser = await createUser(newUser)
-
-    
 
     if(createdUser){
         if(createdUser.severity != undefined){
