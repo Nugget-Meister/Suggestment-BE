@@ -23,7 +23,6 @@ CREATE TABLE suggestment_transactions(
 );
 
 DROP TABLE IF EXISTS suggestment_users;
-
 CREATE TABLE suggestment_users(
     user_id UUID PRIMARY KEY,
     email VARCHAR(256) unique,

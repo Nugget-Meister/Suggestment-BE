@@ -10,6 +10,10 @@ const { sendVerification } = require('../modules/tokenSender.js')
 
 const users = express.Router()
 
+
+
+let debug = true
+
 users.get('/', async (req, res) => {
     const result = await getAllUsers()
     
@@ -37,20 +41,43 @@ users.get('/', async (req, res) => {
 
 
 users.post("/", async (req, res) => {
-    let newUser = req.body
-    newUser.password = await hashPassword(newUser.password)
+    const fail = (data) => {
+        res.status(500).json({
+            message: "BAD",
+            details: "Failed to create user",
+            data: data
+        })
+    }
+    const success = (data) => {
+        res.status(200).json({
+            message: "OK",
+            details:"Created user",
+            data: data
+        })
+    }
 
+    process.stdout.write('Received post request to CREATE user... ')
+
+    if(req.body.password != req.body.repeat){
+        fail(null)
+    }
+    let newUser = req.body
+
+    newUser.password = await hashPassword(newUser.password)
     let createdUser = await createUser(newUser)
+
     
-    sendVerification(newUser)
 
     if(createdUser){
         if(createdUser.severity != undefined){
+            console.log("failed")
             res.status(500).json({
                 message:"BAD",
                 data: createdUser
             })
         } else {
+            console.log('Success')
+            sendVerification(createdUser)
             res.status(200).json({
                 message:"OK",
                 data: createdUser
@@ -77,26 +104,40 @@ users.post("/login", async (req, res) => {
 
 users.get("/verify/:token", async (req,res) => {
     const {token} = req.params
-
-    const fail = () => {
+    console.log(`Received verify request for token ${token}`)
+    
+    const fail = (data) => {
         res.status(500).json({
             message: "BAD",
             details: "Email Verification failed.",
-            data: null
+            data: data
         })
     }
+    const success = (data) => {
+        res.status(200).json({
+            message: "OK",
+            details:"User verified",
+            data: data
+        })
+    }
+
     jwt.verify(token, 'verifyEmail', (error, decoded) => {
-        console.log(decoded)
+       debug ? console.log("DEBUG: ",decoded) : null
         if(error){
             console.log(error);
-            fail()
+            fail(null)
         } else {
             //update table so user verified
-            verifyUser(decoded.email).then((res)=> {console.log(res)})
-            res.status(200).json({
-                message: "OK",
-                details:"User verified",
-                data: null
+            //check if user alraedy verified
+            getUser(decoded)
+        
+            verifyUser(decoded.email).then((response)=> {
+                debug ? console.log("DEBUG: ",response) : null
+                if(res.severity != undefined){
+                    fail(null)
+                }else {
+                    success(null)
+                }
             })
         }
     })
