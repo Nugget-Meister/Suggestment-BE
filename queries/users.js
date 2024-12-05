@@ -3,7 +3,7 @@ let db = require('../db/dbConfig.js')
 
 let getUser = async (data) => {
     try {
-        const result = await db.any("SELECT * FROM suggestment_users WHERE email=$1", [data.email])
+        const result = await db.one("SELECT * FROM suggestment_users WHERE email=$1", [data.email])
         return result
     } catch (error) {
         return error
@@ -36,10 +36,23 @@ let updateUser = async (data, id) => {
         const result = await db.one(
             "UPDATE suggestment_users SET name=$1, email=$2, password=$3, isVerified=$4 WHERE user_id=$4 ",
             [data.name, data.email, data.password, data.isVerified, id])
+            return result
     } catch (error) {
         return error
     }
 }
+
+let verifyUser = async (email) => {
+    try {
+        const result = await db.one(
+            "UPDATE suggestment_users SET isVerified=true WHERE email=$1 RETURNING *",
+            [email])
+            return result
+    } catch (error) {
+        return error
+    }
+}
+
 let deleteUser = async () => {}
 
 module.exports = {
@@ -47,5 +60,6 @@ module.exports = {
     getUser,
     getAllUsers,
     updateUser,
-    deleteUser
+    deleteUser,
+    verifyUser
 }
