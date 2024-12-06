@@ -107,19 +107,19 @@ users.post("/", async (req, res) => {
 })
 
 
-users.post("/login", async (req, res) => {
-    let credentials = req.body
-    let user = await getUser(credentials);
-    let validated = await validatePassword(credentials.password,user[0].password)
+// users.post("/login", async (req, res) => {
+//     let credentials = req.body
+//     let user = await getUser(credentials);
+//     let validated = await validatePassword(credentials.password,user[0].password)
 
-    // if(validated){}
-    // console.log(user, credentials)
-    res.status(200).json({
-        message:"OK",
-        details:"...",
-        data: null
-    })
-})
+//     // if(validated){}
+//     // console.log(user, credentials)
+//     res.status(200).json({
+//         message:"OK",
+//         details:"...",
+//         data: null
+//     })
+// })
 
 users.get("/verify/:token", async (req,res) => {
     const {token} = req.params
