@@ -1,7 +1,14 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
 
-const { getAllUsers, createUser, getUser, verifyUser, getUserFrID } = require('../queries/users')
+const { 
+    getAllUsers, 
+    createUser, 
+    getUser, 
+    verifyUser, 
+    getUserFrID,
+    deleteUserFrEmail
+} = require('../queries/users')
 const {
     hashPassword,
     validatePassword,
@@ -36,8 +43,34 @@ users.get('/', async (req, res) => {
     }
 })
 
+// Delete user from email
+users.delete("/e/:email", async (req, res) => {
+    let { email } = req.params;
+    console.log(`DELETE request for ${email} received`)
+
+    const result = await deleteUserFrEmail(email)
+    console.log(result)
+    if (result.email) {
+        res.status(200).json({
+            message:"OK",
+            details: `Deleted user ${result.email}`,
+            data: null
+        })
+    } else {
+        res.status(500).json({
+            message:"BAD",
+            details: "An error has occurred. User may not exist",
+            data: result.message
+        })
+    }
+})
+
+
+
+
+
 users.get('/:id', async (req, res) => {
-    let { id }= req.params;
+    let { id } = req.params;
 
     console.log("GET Request received for id: ", id)
     const result = await getUserFrID(id)
@@ -61,6 +94,7 @@ users.get('/:id', async (req, res) => {
 })
 
 
+
 users.post("/", async (req, res) => {
     const fail = (data) => {
         res.status(500).json({
@@ -73,7 +107,7 @@ users.post("/", async (req, res) => {
         res.status(200).json({
             message: "OK",
             details:"Created user",
-            data: data
+            data: data.name
         })
     }
 
