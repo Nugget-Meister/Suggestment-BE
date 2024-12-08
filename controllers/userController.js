@@ -69,29 +69,7 @@ users.delete("/e/:email", async (req, res) => {
 
 
 
-users.get('/:id', async (req, res) => {
-    let { id } = req.params;
 
-    console.log("GET Request received for id: ", id)
-    const result = await getUserFrID(id)
-    if(result){
-        if(result.severity != undefined){
-            console.log("Error Detected: ", result.message)
-            res.status(500).json({
-                message:"BAD",
-
-                data: result
-            })
-        } else {
-            console.log("Dispensing.")
-            res.status(200).json({
-                message:"OK",
-                data: result
-            })
-    
-        }
-    }
-})
 
 
 
@@ -100,7 +78,7 @@ users.post("/", async (req, res) => {
         res.status(500).json({
             message: "BAD",
             details: "Failed to create user",
-            data: data
+            data: data.detail
         })
     }
     const success = (data) => {
@@ -122,8 +100,14 @@ users.post("/", async (req, res) => {
     let createdUser = await createUser(newUser)
 
     if(createdUser){
+        if(createdUser.detail){
+            console.log(createdUser.detail)
+        } else {
+            console.log(createdUser)
+        }
+
         if(createdUser.severity != undefined){
-            console.log("failed")
+            console.log("failed to create user")
             res.status(500).json({
                 message:"BAD",
                 data: createdUser
@@ -133,7 +117,9 @@ users.post("/", async (req, res) => {
             sendVerification(createdUser)
             res.status(200).json({
                 message:"OK",
-                data: createdUser
+                data: {
+                    email: createdUser.email
+                }
             })
         }
     }
@@ -155,9 +141,9 @@ users.post("/", async (req, res) => {
 //     })
 // })
 
-users.get("/verify/:token", async (req,res) => {
-    const {token} = req.params
-    console.log(`Received verify request for token ${token}`)
+users.get("/verify", async (req,res) => {
+    const token = req.headers.authorization.split(' ')[1]
+    console.log(`Received verify request for token`, req.headers.origin, token)
     
     const fail = (data) => {
         res.status(500).json({
@@ -174,10 +160,12 @@ users.get("/verify/:token", async (req,res) => {
         })
     }
 
+
+try {
     jwt.verify(token, 'verifyEmail', (error, decoded) => {
-       debug ? console.log("DEBUG: ", decoded) : null
+    //    debug ? console.log("DEBUG: ", decoded) : null
         if(error){
-            console.log(error);
+            console.log(error.message);
             fail(null)
         } else {
             //update table so user verified
@@ -206,6 +194,41 @@ users.get("/verify/:token", async (req,res) => {
         
         }
     })
+} catch (error) {
+    console.log("Invalid Token Detected")
+    res.status(500).json({
+        message: "BAD",
+        details:"Bad token",
+        data:null
+    })
+}
+})
+
+
+
+
+
+users.get('/:id', async (req, res) => {
+    let { id } = req.params;
+
+    console.log("GET Request received for id: ", id)
+    const result = await getUserFrID(id)
+    if(result){
+        if(result.severity != undefined){
+            console.log("Error Detected: ", result.message)
+            res.status(500).json({
+                message:"BAD",
+                data: result
+            })
+        } else {
+            console.log("Dispensing.")
+            res.status(200).json({
+                message:"OK",
+                data: result
+            })
+    
+        }
+    }
 })
 
 module.exports = users

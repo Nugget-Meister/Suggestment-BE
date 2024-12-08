@@ -5,6 +5,7 @@ const transactions = express.Router()
 
 transactions.get('/user/:id', async (req,res) => {
     let { id } = req.params
+    // console.log(req.params)
     const result = await getTransactions(id)
     process.stdout.write(`Transactions Request for: ${id} `)
     
