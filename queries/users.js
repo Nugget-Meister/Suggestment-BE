@@ -64,14 +64,24 @@ let verifyUser = async (email) => {
     }
 }
 
-let deleteUser = async () => {}
+let deleteUserFrEmail = async (email) => {
+    try {
+        const result = await db.one(
+            "DELETE FROM suggestment_users WHERE email=$1 RETURNING *",
+            [email]
+        )
+        return result
+    } catch (error) {
+        return error
+    }
+}
 
 module.exports = {
     createUser,
     getUser,
     getAllUsers,
     updateUser,
-    deleteUser,
+    deleteUserFrEmail,
     verifyUser,
     getUserFrID
 }

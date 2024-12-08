@@ -19,6 +19,7 @@ CREATE TABLE suggestment_transactions(
     user_id VARCHAR(256),
     source_user_id VARCHAR(256),
     details VARCHAR(256),
+    category VARCHAR(256),
     amount decimal, 
     date date
 );
