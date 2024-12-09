@@ -8,7 +8,8 @@ const { createTransporter } = require('../testauth')
 const { sendLoginVerification } = require('../modules/tokenSender')
 
 let liveURL = process.env.LIVE || process.env.LOCAL 
-let devMode = process.env.ISDEV
+
+let devMode = process.env.ISDEV == 'true'
 
 const login = express.Router()
  
