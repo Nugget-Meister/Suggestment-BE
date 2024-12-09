@@ -87,10 +87,10 @@ login.get("/sync", async (req,res) => {
     console.log('Session Token Verification: ', sessionToken)
     
     jwt.verify(sessionToken, 'sessionToken', async (error, decoded)=> {
-        console.log(decoded.email)
+        console.log(decoded)
         if(error){
-            console.log(error)
-            res.status(500).json({
+            console.log(error.message)
+            res.status(401).json({
                 message:"BAD",
                 details:"Session Expired. Relog",
                 data: null

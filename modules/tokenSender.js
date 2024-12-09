@@ -61,7 +61,32 @@ const sendLoginVerification = async (data) => {
             console.log(info, error)
         })
     })
+}
 
+
+const sendResetVerification = async (data) => {
+    const token = jwt.sign({
+        id: data.user_id,
+        email: data.email
+    }, 'resetVerification', {expiresIn: devMode ? '120m': '5m' })
+
+    const mailConfig = {
+        from: process.env.G_EMAIL,
+        to: data.email,
+        subject: 'Suggestment Password Reset',
+        html: `<p>Hi, someone has attempted to reset your password. You can change your password <a href="${frontURL}/reset/${token}/">here</a>. This link will expire in ${devMode ? '120': '5'} minutes.<p>`
+     }
+     
+    createTransporter()
+    .then((t) => {
+        t.sendMail(mailConfig, (error, info) => {
+             if (error) {
+                console.log(error)
+             }else {
+                console.log(`Email sent to ${mailConfig.to}.`)
+             }
+         })
+     })
 }
 
 
@@ -69,5 +94,6 @@ const sendLoginVerification = async (data) => {
 
 module.exports = {
     sendVerification,
-    sendLoginVerification
+    sendLoginVerification,
+    sendResetVerification
 }
