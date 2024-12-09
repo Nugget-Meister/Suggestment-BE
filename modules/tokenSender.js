@@ -8,8 +8,11 @@ dotenv.config()
 
 let devMode = process.env.ISDEV || false
 
-let backURL = devMode ? process.env.LOCAL : process.env.LIVE 
-let frontURL = devMode ? process.env.F_LOCAL : process.env.F_LIVE 
+console.log(devMode == 'true')
+let backURL = devMode == 'true' ? process.env.LOCAL : process.env.LIVE 
+let frontURL = devMode == 'true' ? process.env.F_LOCAL : process.env.F_LIVE 
+
+devMode == 'true' ? console.log("Dev mode is active. Targeting", frontURL) : console.log("Dev mode is inactive, Targeting", frontURL)
 
 // Will store everything here when migrate
 const sendVerification = (data) => {
