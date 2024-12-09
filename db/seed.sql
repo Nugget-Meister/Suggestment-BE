@@ -21,3 +21,10 @@ VALUES
 ('5003ccea-1131-4d92-9231-8b5f27152d18', null, 'TOPCO ASSOCIATES LLC', 571.77, '2024-01-19', 'PAYMENT'),
 ('5003ccea-1131-4d92-9231-8b5f27152d18', null, 'IBM', -134.25, '2024-09-24', 'PURCHASE');
 
+
+INSERT INTO suggestment_transactions(user_id, source_user_id, details, amount, date, category)
+VALUES
+('5003ccea-1131-4d92-9231-8b5f27152d18', null, 'Rental Payment LLC', -615.93, '2024-11-04', 'BILL'),
+('5003ccea-1131-4d92-9231-8b5f27152d18', null, 'TOPCO ASSOCIATES LLC', 417.89, '2024-11-04', 'PAYMENT'),
+('5003ccea-1131-4d92-9231-8b5f27152d18', null, 'Spotify Technology S.A', -19.99, '2024-11-14', 'BILL'),;
+

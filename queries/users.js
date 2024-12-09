@@ -12,7 +12,7 @@ let getUser = async (data) => {
 
 let getUserFrID = async (id) => {
     try {
-        const result = await db.one("SELECT * FROM suggestment_users WHERE id=$1", [id])
+        const result = await db.one("SELECT * FROM suggestment_users WHERE user_id=$1", [id])
         return result
     } catch (error) {
         return error
@@ -44,9 +44,10 @@ let createUser = async (data) => {
 }
 let updateUser = async (data, id) => {
     try {
+        // console.log(data,id)
         const result = await db.one(
-            "UPDATE suggestment_users SET name=$1, email=$2, password=$3, isVerified=$4 WHERE user_id=$4 ",
-            [data.name, data.email, data.password, data.isVerified, id])
+            "UPDATE suggestment_users SET name=$1, email=$2, password=$3, isVerified=$4 WHERE user_id=$5 RETURNING *",
+            [data.name, data.email, data.password, data.isverified, id])
             return result
     } catch (error) {
         return error

@@ -7,41 +7,42 @@ const {
     getUser, 
     verifyUser, 
     getUserFrID,
-    deleteUserFrEmail
+    deleteUserFrEmail,
+    updateUser
 } = require('../queries/users')
 const {
     hashPassword,
     validatePassword,
 } = require('./encrypt.js')
-const { sendVerification } = require('../modules/tokenSender.js')
+const { sendVerification, sendResetVerification } = require('../modules/tokenSender.js')
 
 const users = express.Router()
 
 let debug = true
 
-users.get('/', async (req, res) => {
-    const result = await getAllUsers()
+// users.get('/', async (req, res) => {
+//     const result = await getAllUsers()
     
-    process.stdout.write("GET Request for all Users received... ")
+//     process.stdout.write("GET Request for all Users received... ")
 
-    if(result){
-        // console.log(res)
-        if(result.severity != undefined){
-            console.log("Error Detected: ", result.message)
-            res.status(500).json({
-                message:"BAD",
+//     if(result){
+//         // console.log(res)
+//         if(result.severity != undefined){
+//             console.log("Error Detected: ", result.message)
+//             res.status(500).json({
+//                 message:"BAD",
 
-                data: result
-            })
-        } else {
-            console.log("Dispensing.")
-            res.status(200).json({
-                message:"OK",
-                data: result
-            })
-        }
-    }
-})
+//                 data: result
+//             })
+//         } else {
+//             console.log("Dispensing.")
+//             res.status(200).json({
+//                 message:"OK",
+//                 data: result
+//             })
+//         }
+//     }
+// })
 
 // Delete user from email
 users.delete("/e/:email", async (req, res) => {
@@ -64,12 +65,6 @@ users.delete("/e/:email", async (req, res) => {
         })
     }
 })
-
-
-
-
-
-
 
 
 
@@ -202,6 +197,101 @@ try {
         data:null
     })
 }
+})
+
+users.get('/reset', async (req, res)=> {
+    // With valid user token, sent reset token
+    const sessionToken = req.headers.authorization.split(' ')[1]
+
+    try {
+        jwt.verify(sessionToken, 'sessionToken', async (error, decoded) => {
+            if(error){
+                console.log("Invalid Token Detected")
+                res.status(500).json({
+                    message: "BAD",
+                    details:"Bad token",
+                    data:null
+                })
+            } else {
+                sendResetVerification(decoded)
+                res.status(200).json({
+                    message: "OK",
+                    details:"Reset email sent",
+                    data: null,
+                })
+
+            }
+
+        })
+    } catch (error) {
+        console.log("Invalid Token Detected")
+        res.status(500).json({
+            message: "BAD",
+            details:"Bad token",
+            data:null
+        })
+    }
+})
+
+users.post('/reset', async (req, res) => {
+    const resetToken = req.headers.authorization.split(' ')[1]
+    const newData = req.body
+
+    console.log("Reset request with token", resetToken)
+
+    try {
+        jwt.verify(resetToken, 'resetVerification', async (error, decoded) => {
+            if(error){
+                console.log("Invalid Token Detected")
+                console.log(error)
+                res.status(500).json({
+                    message: "BAD",
+                    details:"Bad token",
+                    data:null
+                })
+            } else {
+                // console.log(decoded)
+                let user = await getUser(decoded)
+                console.log(user.user_id)
+                if (!user.severity){
+                    let hashed = await hashPassword(newData.password)
+                    // console.log({...user, password: hashed}, user.user_id)
+                    let newUser = await updateUser({...user, password: hashed}, user.user_id)
+
+                    if(!newUser.severity){
+                        console.log(newUser)
+                        res.status(200).json({
+                            message: "OK",
+                            details:"User Updated",
+                            data: null,
+                        })
+                    } else {
+                        console.log("Error updating user")
+                        console.log(newUser)
+                        res.status(500).json({
+                            message: "BAD",
+                            details:"Internal error. User may not exist",
+                            data:null
+                        })
+                    }
+                } else {
+                    console.log("Error getting user")
+                    res.status(500).json({
+                        message: "BAD",
+                        details:"Internal error. User may not exist",
+                        data:null
+                    })
+                }
+            }
+        })
+    } catch (error) {
+        console.log("Invalid Token Detected")
+        res.status(500).json({
+            message: "BAD",
+            details:"Bad token",
+            data:null
+        })
+    }
 })
 
 
