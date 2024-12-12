@@ -20,6 +20,7 @@ const createTransporter = async () => {
     const accessToken = await new Promise((res, rej)=> {
         authClient.getAccessToken((error, token) => {
             if (error){
+                console.log(error)
                 rej("Failed to create token")
             }
             res(token)

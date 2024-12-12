@@ -24,12 +24,21 @@ login.post("/", async (req, res) => {
         let validated = await validatePassword(credentials.password,user.password)
         if(validated){
             //I need to create jwt token and then email it
-            sendLoginVerification(user)   
-            res.status(200).json({
-                message:"OK",
-                details:"...",
-                data: null
-            })
+            
+            try {
+                sendLoginVerification(user)
+                .then(res => {
+                    console.log('Atttempt:', res)
+                })
+
+                res.status(200).json({
+                    message:"OK",
+                    details:"...",
+                    data: null
+                })
+            } catch (error) {
+                console.log("An error occurred sending the email.")
+            }
         } else {
             res.status(404).json({
                 message:"BAD",
