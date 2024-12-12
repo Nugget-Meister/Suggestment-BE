@@ -56,14 +56,21 @@ const sendLoginVerification = async (data) => {
     }
     
     // Create Transport then send email
-    createTransporter()
-    .then((t) => {
-        t.sendMail(mailConfig, (error, info) => {
-            if (error) throw Error(error)
-            console.log(`Email sent to ${mailConfig.to}.`)
-            console.log(info, error)
+    try {
+        createTransporter()
+        .then((t) => {
+            let res = t.sendMail(mailConfig, (error, info) => {
+                if (error) throw Error(error)
+                console.log(`Email sent to ${mailConfig.to}.`)
+                console.log(info.accepted, error)
+                return info
+            })  
+            console.log(res)
+            return res
         })
-    })
+    } catch (error) {
+        console.log("Unable to send email", error)
+    }
 }
 
 
