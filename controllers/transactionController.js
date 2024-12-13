@@ -71,7 +71,7 @@ transactions.get('/:id', (req, res)=> {
 transactions.post('/', (req, res)=> {
     const sessionToken = req.headers.authorization.split(' ')[1]
     const data = req.body
-
+    console.log("POST request for ", req.body.details)
     try {
         jwt.verify(sessionToken, 'sessionToken', async (error, decoded) => {
             if(error){
@@ -84,6 +84,7 @@ transactions.post('/', (req, res)=> {
             } else {
                 // Do things here
                 let result = await createTransaction(data)
+                console.log(result)
                 if(!result.severity){
                     res.status(200).json({
                         message:"OK",
@@ -91,6 +92,7 @@ transactions.post('/', (req, res)=> {
                         data: result,
                     })
                 } else {
+                    console.log(result.severity, result.message)
                     res.status(404).json({
                         message:"BAD",
                         details:"unable to create transaction",
@@ -115,6 +117,7 @@ transactions.put('/:id', (req, res)=> {
     const sessionToken = req.headers.authorization.split(' ')[1]
 
     const data = req.body
+    console.log("PUT request for ", req.body.transaction_id)
     
     try {
         jwt.verify(sessionToken, 'sessionToken', async (error, decoded) => {
@@ -132,9 +135,11 @@ transactions.put('/:id', (req, res)=> {
                     res.status(200).json({
                         message:"OK",
                         details:"transaction updated",
-                        data: result,
+                        data: result.transaction_id,
                     })
                 } else {
+                    console.log(result.severity, result.message)
+                    console.log(result)
                     res.status(404).json({
                         message:"BAD",
                         details:"unable to find transaction",
@@ -170,7 +175,8 @@ transactions.delete('/:id', (req, res)=> {
             } else {
                 // Do things here
                 const result = await deleteTransaction(id)
-                if(!result.severity){
+                console.log(result)
+                if(!result.severity && result.transaction_id){
                     res.status(200).json({
                         message:"OK",
                         details:"transaction",
