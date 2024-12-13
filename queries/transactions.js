@@ -39,11 +39,11 @@ const updateTransaction = async (data) => {
         return error
     }
 }
-const deleteTransaction = async (data) => {
+const deleteTransaction = async (id) => {
     try {
         const result = await db.one(
             "DELETE FROM suggestment_transactions WHERE transaction_id=$1 RETURNING *", 
-            [data.transaction_id]
+            [id]
         )
         return result
     } catch (error) {
