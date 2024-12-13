@@ -31,7 +31,7 @@ const createTransaction = async (data) => {
 const updateTransaction = async (data) => {
     try {
         const result = await db.one(
-            "UPDATE suggestment_transactions SET (user_id, source_user_id, details, category, amount, date) VALUES ($1, null, $2, $3, $4, $5) WHERE transaction_id=$6 RETURNING *", 
+            "UPDATE suggestment_transactions SET user_id=$1, source_user_id=null, details=$2, category=$3, amount=$4, date=$5 WHERE transaction_id=$6 RETURNING *", 
             [data.user_id, data.details, data.category, data.amount, data.date, data.transaction_id]
         )
         return result

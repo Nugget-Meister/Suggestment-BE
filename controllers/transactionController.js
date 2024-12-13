@@ -71,6 +71,7 @@ transactions.get('/:id', (req, res)=> {
 transactions.post('/', (req, res)=> {
     const sessionToken = req.headers.authorization.split(' ')[1]
     const data = req.body
+    console.log("POST request for ", req.body.transaction_id)
 
     try {
         jwt.verify(sessionToken, 'sessionToken', async (error, decoded) => {
@@ -115,6 +116,7 @@ transactions.put('/:id', (req, res)=> {
     const sessionToken = req.headers.authorization.split(' ')[1]
 
     const data = req.body
+    console.log("PUT request for ", req.body.transaction_id)
     
     try {
         jwt.verify(sessionToken, 'sessionToken', async (error, decoded) => {
@@ -135,6 +137,8 @@ transactions.put('/:id', (req, res)=> {
                         data: result,
                     })
                 } else {
+                    console.log(result.severity, result.message)
+                    console.log(result)
                     res.status(404).json({
                         message:"BAD",
                         details:"unable to find transaction",
